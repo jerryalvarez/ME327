@@ -1,7 +1,7 @@
-from agents import Car, Pedestrian, RectangleBuilding
-from entities import Entity
+from carlo.agents import Car, Pedestrian, RectangleBuilding
+from carlo.entities import Entity
 from typing import Union
-from visualizer import Visualizer
+from carlo.visualizer import Visualizer
 
 class World:
     def __init__(self, dt: float, width: float, height: float, ppm: float = 8):

@@ -1,5 +1,5 @@
-from graphics import *
-from entities import RectangleEntity, CircleEntity, RingEntity
+from carlo.graphics import *
+from carlo.entities import RectangleEntity, CircleEntity, RingEntity
 
 class Visualizer:
     def __init__(self, width: float, height: float, ppm: int):
