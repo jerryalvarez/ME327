@@ -2,14 +2,13 @@ import numpy as np
 from worlds import *
 import time
 
-human_controller = True
-
+human_controller = False
 
 def main():
     w = BaseCarlo()
     w.render()
 
-    input() 
+    # input() 
     if not human_controller:
         for k in range(400):
             w.tick() 

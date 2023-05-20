@@ -15,8 +15,8 @@ LANE_BOTTOM_OFFSET = 1
 GOAL_HEIGHT = 1
 WORLD_WIDTH = 14 #smaller lane 
 # WORLD_WIDTH = 20
-#WORLD_HEIGHT = 50
-WORLD_HEIGHT = 120 # dimension for Jerry's Dell Monitor
+WORLD_HEIGHT = 50
+#WORLD_HEIGHT = 120 # dimension for Jerry's Dell Monitor
 GRASS_WIDTH = 1
 ROAD_WIDTH = (WORLD_WIDTH - 2 * GRASS_WIDTH) / NUM_LANES
 PIXELS_PER_METER = 15
@@ -174,12 +174,18 @@ class BaseCarlo():
 
 
     def end_sim(self):
+        """
+        Checks to see if collision has occured at the left boundary or right boundary or car has reached its goal 
+        """
         if self.car.collidesWith(self.goal) or self.car.collidesWith(self.left) or self.car.collidesWith(self.right):
             return True
         else:
             return False
 
     def lane_departure(self):
+        """
+        Checks to see if car has departed from its current lane
+        """
         if self.car.collidesWith(self.leftlane) or self.car.collidesWith(self.rightlane):
             return True
         else:
