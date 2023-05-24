@@ -21,7 +21,8 @@ GRASS_WIDTH = 1
 ROAD_WIDTH = (WORLD_WIDTH - 2 * GRASS_WIDTH) / NUM_LANES
 PIXELS_PER_METER = 15
 DT = 0.1 # time steps in terms of seconds. In other words, 1/dt is the FPS.
-CAR_VEL = 5
+CAR_VEL = 2
+#CAR_VEL = 0
 
 class BaseCarlo():
     
@@ -143,9 +144,10 @@ class BaseCarlo():
         car_init_y = LANE_BOTTOM_OFFSET + LANE_MARKER_LENGTH / 2
         self.car = Car(
             Point(car_init_x, car_init_y), # center of car
-            np.pi / 2 # heading
+            (np.pi / 2) + np.radians(3) # heading
         )
         self.car.velocity = Point(0, CAR_VEL)
+        self.car.friction = 0
         self.world.add(self.car)
 
     def render(self):
