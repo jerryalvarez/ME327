@@ -4,7 +4,7 @@ import time
 from helper import *
 import serial 
 
-human_controller = False
+human_controller = True
 
 def main():
     w = BaseCarlo()
@@ -23,7 +23,7 @@ def main():
     else: # Let's use the steering wheel (Logitech G29) for the human control of car c1
         from carlo.interactive_controllers import KeyboardController
         controller = KeyboardController(w.world)
-        ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 9600, timeout=1)
+        ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 250000, timeout=1)
         for k in range(400):
             w.car.set_control(controller.steering, controller.throttle)
             if w.lane_departure:

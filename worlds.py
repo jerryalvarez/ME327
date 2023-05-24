@@ -13,15 +13,16 @@ LANE_MARKER_LENGTH = 3
 LANE_MARKER_WIDTH = 0.15
 LANE_BOTTOM_OFFSET = 1
 GOAL_HEIGHT = 1
-WORLD_WIDTH = 14 #smaller lane 
-# WORLD_WIDTH = 20
+#WORLD_WIDTH = 10 #smaller lane 
+#WORLD_WIDTH = 20
+WORLD_WIDTH = 30
 WORLD_HEIGHT = 50
 #WORLD_HEIGHT = 120 # dimension for Jerry's Dell Monitor
 GRASS_WIDTH = 1
 ROAD_WIDTH = (WORLD_WIDTH - 2 * GRASS_WIDTH) / NUM_LANES
 PIXELS_PER_METER = 15
 DT = 0.1 # time steps in terms of seconds. In other words, 1/dt is the FPS.
-CAR_VEL = 2
+CAR_VEL = 3
 #CAR_VEL = 0
 
 class BaseCarlo():

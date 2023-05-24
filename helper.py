@@ -14,10 +14,10 @@ def leftcollision(BaseCarlo):
 def rightcollision(BaseCarlo):
    return BaseCarlo.car.collidesWith(BaseCarlo.rightlane)
 
-def steeringInput(xh):
-    if(xh > 0.02):
+def steeringInput(xh): 
+    if(xh > 0.005):
        current_steering = -3.5
-    elif (xh < -0.02):
+    elif (xh < -0.005):
        current_steering = 3.5
     else: 
        current_steering = 0

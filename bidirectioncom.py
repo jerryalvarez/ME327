@@ -10,32 +10,27 @@ sim_ended = False
 rightLane = False 
 leftLane = False
 centered = True
+ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 250000, timeout=1)
 
 # Rendering function
 def main():
     w = BaseCarlo()
     for k in range(400):
 
-        # if w.lane_departure:
-        #     global rightLane
-        #     global leftLane
-        #     global centered 
+        if w.lane_departure:
+            if rightcollision(w):
+                ser.write(b"left\n")
+            elif leftcollision(w):
+                ser.write(b"right\n") 
+            else: 
+                ser.write(b"other\n") 
 
-        #     if rightcollision(w):
-        #         rightLane = True
-        #         centered = False
-        #         #ser.write(b"left\n")
-        #     elif leftcollision(w):
-        #         leftLane = True
-        #         centered = False
-                #ser.write(b"right\n") 
-            # else: 
-        #         centered = True
-        #         rightLane = False
-        #         leftLane = False
-        #         #ser.write(b"other\n") 
+        if (k == 1):
+            print("Please move handle to its limits slowly")
+            input()
 
         if latest_value is not None:  
+            #print(latest_value)
             w.car.set_control(steeringInput(latest_value),0)
 
         w.tick() 
@@ -51,7 +46,6 @@ def main():
 
 # Serial reading function
 def read_serial_values():
-    ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 9600, timeout=1)
     while True:
         if ser.in_waiting > 0:
             line = ser.readline()
@@ -60,11 +54,6 @@ def read_serial_values():
             # Update the latest_value with the new value from the serial monitor
             global latest_value
             latest_value = num
-
-        # if rightLane:
-        #     ser.write(b"left\n")
-        # elif leftLane:
-        #     ser.write(b"right\n") 
         
         if sim_ended:
             ser.close()
