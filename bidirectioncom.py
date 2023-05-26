@@ -7,30 +7,30 @@ from helper import *
 # Global variable to store the latest value from the serial monitor
 latest_value = None
 sim_ended = False
-rightLane = False 
-leftLane = False
-centered = True
 ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 250000, timeout=1)
 
 # Rendering function
 def main():
     w = BaseCarlo()
+    depth = 0
+    MAX_DEPTH = abs((GRASS_WIDTH + ROAD_WIDTH * (1 + 1)) - w.rightlane.center.x)
+
     for k in range(400):
-
-        if w.lane_departure:
-            if rightcollision(w):
-                ser.write(b"left\n")
-            elif leftcollision(w):
-                ser.write(b"right\n") 
-            else: 
-                ser.write(b"other\n") 
-
         if (k == 1):
-            print("Please move handle to its limits slowly")
+            print("Please wait for Serial Montior to begin")
             input()
 
+        if w.car.center.x < w.leftlane.center.x: #left crash, depth is negative value 
+            depth = max(w.car.center.x - w.leftlane.center.x, -MAX_DEPTH)
+        elif w.car.center.x > w.rightlane.center.x:  #right crash, depth is positive value 
+            depth = min(w.car.center.x - w.rightlane.center.x, MAX_DEPTH)
+        else: 
+            depth = 0
+
+        data = str(depth) + ',' + str(MAX_DEPTH) + '\n'
+        ser.write(data.encode()) 
+
         if latest_value is not None:  
-            #print(latest_value)
             w.car.set_control(steeringInput(latest_value),0)
 
         w.tick() 

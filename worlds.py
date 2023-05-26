@@ -6,24 +6,30 @@ import time
 
 human_controller = False
 NUM_LANES = 3
-#NUM_ROWS = 14
 NUM_ROWS = 20
 LANE_MARKER_SPACING = 3
 LANE_MARKER_LENGTH = 3
 LANE_MARKER_WIDTH = 0.15
 LANE_BOTTOM_OFFSET = 1
 GOAL_HEIGHT = 1
-#WORLD_WIDTH = 10 #smaller lane 
-#WORLD_WIDTH = 20
-WORLD_WIDTH = 30
+GRASS_WIDTH = 1
+PIXELS_PER_METER = 15
+
+#WORLD_WIDTH = 25 #smaller lane 
+WORLD_WIDTH = 30 #medium lane
+#WORLD_WIDTH = 50 #largest lane
+
 WORLD_HEIGHT = 50
 #WORLD_HEIGHT = 120 # dimension for Jerry's Dell Monitor
-GRASS_WIDTH = 1
+
 ROAD_WIDTH = (WORLD_WIDTH - 2 * GRASS_WIDTH) / NUM_LANES
-PIXELS_PER_METER = 15
+
+LANE_PERCENTAGE = 40 #has to be less than 40
+
 DT = 0.1 # time steps in terms of seconds. In other words, 1/dt is the FPS.
-CAR_VEL = 3
-#CAR_VEL = 0
+
+#CAR_VEL = 3
+CAR_VEL = 0
 
 class BaseCarlo():
     
@@ -59,21 +65,21 @@ class BaseCarlo():
         # add lane boundaries
         self.leftlane = RectangleBuilding(
             Point(
-                GRASS_WIDTH + ROAD_WIDTH,
+                GRASS_WIDTH + ROAD_WIDTH + ROAD_WIDTH * (LANE_PERCENTAGE/100),
                 (WORLD_HEIGHT / 2) - (2 / PIXELS_PER_METER)
             ),
             Point(LANE_MARKER_WIDTH, WORLD_HEIGHT),
-            color = 'Gray'
+            color = 'LawnGreen'
         )
         self.world.add(self.leftlane) 
         
         self.rightlane = RectangleBuilding(
             Point(
-                GRASS_WIDTH + ROAD_WIDTH * 2,
+                GRASS_WIDTH + ROAD_WIDTH * 2 - ROAD_WIDTH * (LANE_PERCENTAGE/100),
                 (WORLD_HEIGHT / 2) - (2 / PIXELS_PER_METER)
             ),
             Point(LANE_MARKER_WIDTH, WORLD_HEIGHT),
-            color = 'Gray'
+            color = 'LawnGreen'
         )
         self.world.add(self.rightlane) 
 
@@ -185,11 +191,3 @@ class BaseCarlo():
         else:
             return False
 
-    def lane_departure(self):
-        """
-        Checks to see if car has departed from its current lane
-        """
-        if self.car.collidesWith(self.leftlane) or self.car.collidesWith(self.rightlane):
-            return True
-        else:
-            return False 

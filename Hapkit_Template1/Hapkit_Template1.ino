@@ -12,6 +12,13 @@ int dirPin = 8; // direction output pin for motor 1
 int sensorPosPin = A2; // input pin for MR sensor
 int fsrPin = A3; // input pin for FSR sensor
 
+// Pins added for vibration motors
+int pinL = 3; // pin for vibration motor on left side of steering wheel
+int pinR = 11; // pin for vibration motor on right side of steering wheel
+
+double dutyL = 0; // duty cycle for left vibration motor
+double dutyR = 0; // duty cycle for right vibration motor
+
 // Position tracking variables
 int updatedPos = 0;     // keeps track of the latest updated value of the MR sensor reading
 int rawPos = 0;         // current raw reading from MR sensor
@@ -66,6 +73,18 @@ void setup()
   lastLastRawPos = analogRead(sensorPosPin);
   lastRawPos = analogRead(sensorPosPin);
   flipNumber = 0;
+
+  // Set PWM frequencies
+  setPwmFrequency(pinL, 1);
+  setPwmFrequency(pinR, 1);
+
+  // Output pins
+  pinMode(pinL, OUTPUT); // PWM pin for left vibration motor
+  pinMode(pinR, OUTPUT); // PWM pin for right vibration motor
+
+  // Initialize motors
+  analogWrite(pinL, 0); 
+  analogWrite(pinR, 0); 
 }
 
 
@@ -115,16 +134,43 @@ void loop()
   double xh = ts * (M_PI/180) * rh;
   Serial.println(xh,5);
 
+  double k = 10; // spring force [N/m]
+  double max_duty = 0.5; // maximum possible duty cycle (within comfortable limit of the vibration motors)
+  
+
   if(Serial.available()){
     command = Serial.readStringUntil('\n');
-    if(command.equals("right")){
-      force = 1;
-    } else if(command.equals("left")){
-      force = -1;
+
+    // Parse and extract the two variables
+    double depth = command.substring(0, command.indexOf(',')).toDouble();
+    String MAX_DEPTH2STRING = command.substring(command.indexOf(',') + 1);
+    MAX_DEPTH2STRING.trim();
+    double MAX_DEPTH = MAX_DEPTH2STRING.toDouble();
+    double m_duty = max_duty/MAX_DEPTH; // slope of the duty cycle
+
+    if(depth > 0){ // right crash, depth is positive value
+      force = k * depth;
+      dutyR = depth * m_duty;
+    } else if(depth < 0){  // left crash, depth is negative value 
+      dutyL = depth * m_duty;
+      force = -k * depth;
     } else {
       force = 0;
+      dutyR = 0;
+      dutyL = 0;
     }
-  }
+
+  } 
+
+  // prevent duty cycle from increasing past lane boundaries
+  dutyL = min(max_duty, dutyL);
+  dutyR = min(max_duty, dutyR);
+
+  int outputL = (int)(dutyL * 255);
+  int outputR = (int)(dutyR * 255);
+
+  analogWrite(pinL, outputL);
+  analogWrite(pinR, outputR);
 
   //*************************************************************
   //*** Section 3. Assign a motor output force in Newtons *******  
