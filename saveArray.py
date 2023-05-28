@@ -6,14 +6,15 @@ import matplotlib.pyplot as plt
 
 # np.savez("example", x=x, y=y)
 
-npzfile = np.load('example.npz')
+# npzfile = np.load('example.npz')
 
-x = npzfile['x']
+# x = npzfile['x']
+# y = np.arange(x.size)
 
-y = npzfile['y']
+print(np.random.random())
 
-plt.plot(x)
-plt.show()
+# plt.plot(x,y)
+# plt.show()
 
 # print(npzfile['x'])
 # print(npzfile['y'])

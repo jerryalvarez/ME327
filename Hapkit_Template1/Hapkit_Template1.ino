@@ -130,7 +130,8 @@ void loop()
   //*************************************************************
 
   double rh = 0.09;   //[m]
-  double ts = updatedPos * -0.0122 + 12.1374;
+  // double ts = updatedPos * -0.0122 + 12.1374; Jerry's Hapkit 
+  double ts = -(0.0121 * updatedPos - 4.5246); // Johnny's Hapkit 
   double xh = ts * (M_PI/180) * rh;
   Serial.println(xh,5);
 
@@ -149,10 +150,12 @@ void loop()
 
     if(depth > 0){ // right crash, depth is positive value
       force = -k * depth;
-      dutyR = depth * m_duty;
+      //dutyR = depth * m_duty;
+      dutyR = 0.7;
     } else if(depth < 0){  // left crash, depth is negative value 
       force = -k * depth;
-      dutyL = depth * m_duty;
+      //dutyL = abs(depth) * m_duty;
+      dutyL = 0.5;
     } else {
       force = 0;
       dutyR = 0;

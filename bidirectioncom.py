@@ -8,6 +8,7 @@ from helper import *
 latest_value = None
 sim_ended = False
 ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 250000, timeout=1)
+#er = serial.Serial('/dev/cu.usbserial-AL03G1OK', 250000, timeout=1) #Johnny's Hapkit 
 
 # Rendering function
 def main():
@@ -39,7 +40,10 @@ def main():
         ser.write(data.encode()) 
 
         if latest_value is not None:  
-            w.car.set_control(steeringInput(latest_value),0)
+            if np.random.random() < 0.9:
+                w.car.set_control(np.random.choice(3.5, -3/5),0)
+            else: 
+                w.car.set_control(steeringInput(latest_value),0)
 
         w.tick() 
         w.render()
@@ -47,6 +51,8 @@ def main():
 
         if w.end_sim():
             if export:
+                x = np.delete(x, 0)
+                y = np.delete(y, 0)
                 exportPos(x, y, filename)
             global sim_ended
             sim_ended = True

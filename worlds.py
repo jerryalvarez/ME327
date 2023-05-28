@@ -28,7 +28,7 @@ LANE_PERCENTAGE = 40 #has to be less than 40
 
 DT = 0.1 # time steps in terms of seconds. In other words, 1/dt is the FPS.
 
-CAR_VEL = 3
+CAR_VEL = 2
 #CAR_VEL = 0
 
 class BaseCarlo():
@@ -69,7 +69,7 @@ class BaseCarlo():
                 (WORLD_HEIGHT / 2) - (2 / PIXELS_PER_METER)
             ),
             Point(LANE_MARKER_WIDTH, WORLD_HEIGHT),
-            color = 'LawnGreen'
+            color = 'Gray'
         )
         self.world.add(self.leftlane) 
         
@@ -79,7 +79,7 @@ class BaseCarlo():
                 (WORLD_HEIGHT / 2) - (2 / PIXELS_PER_METER)
             ),
             Point(LANE_MARKER_WIDTH, WORLD_HEIGHT),
-            color = 'LawnGreen'
+            color = 'Gray'
         )
         self.world.add(self.rightlane) 
 
