@@ -23,3 +23,11 @@ def steeringInput(xh):
        current_steering = 0
 
     return current_steering
+
+def exportPos(x, y, filename):
+   np.savez(str(filename), x=x, y=y)
+
+def importPos(filename):
+   npzfile = np.load(str(filename) + ".npz")
+   x = npzfile['x']
+   y = npzfile['y']

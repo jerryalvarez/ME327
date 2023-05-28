@@ -14,8 +14,16 @@ def main():
     w = BaseCarlo()
     depth = 0
     MAX_DEPTH = abs((GRASS_WIDTH + ROAD_WIDTH * (1 + 1)) - w.rightlane.center.x)
+    x = np.array(0)
+    y = np.array(0)
+    export = False
+    filename = "example"
 
     for k in range(400):
+        if export: 
+            x = np.append(x, w.car.center.x)
+            y = np.append(y, w.car.center.y)
+
         if (k == 1):
             print("Please wait for Serial Montior to begin")
             input()
@@ -38,6 +46,8 @@ def main():
         time.sleep(DT/1) 
 
         if w.end_sim():
+            if export:
+                exportPos(x, y, filename)
             global sim_ended
             sim_ended = True
             w.world.close()

@@ -2,7 +2,7 @@ import serial
 import time
 #using hapkit template #1 
 # make sure the 'COM#' is set according the Windows Device Manager
-ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 9600, timeout=1)
+ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 250000, timeout=1)
 time.sleep(2)
 
 def num_to_range(num, inMin, inMax, outMin, outMax):

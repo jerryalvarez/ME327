@@ -134,13 +134,12 @@ void loop()
   double xh = ts * (M_PI/180) * rh;
   Serial.println(xh,5);
 
-  double k = 10; // spring force [N/m]
+  double k = 5; // spring force [N/m]
   double max_duty = 0.5; // maximum possible duty cycle (within comfortable limit of the vibration motors)
   
 
   if(Serial.available()){
     command = Serial.readStringUntil('\n');
-
     // Parse and extract the two variables
     double depth = command.substring(0, command.indexOf(',')).toDouble();
     String MAX_DEPTH2STRING = command.substring(command.indexOf(',') + 1);
@@ -149,22 +148,17 @@ void loop()
     double m_duty = max_duty/MAX_DEPTH; // slope of the duty cycle
 
     if(depth > 0){ // right crash, depth is positive value
-      force = k * depth;
+      force = -k * depth;
       dutyR = depth * m_duty;
     } else if(depth < 0){  // left crash, depth is negative value 
-      dutyL = depth * m_duty;
       force = -k * depth;
+      dutyL = depth * m_duty;
     } else {
       force = 0;
       dutyR = 0;
       dutyL = 0;
     }
-
   } 
-
-  // prevent duty cycle from increasing past lane boundaries
-  dutyL = min(max_duty, dutyL);
-  dutyR = min(max_duty, dutyR);
 
   int outputL = (int)(dutyL * 255);
   int outputR = (int)(dutyR * 255);
