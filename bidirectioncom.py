@@ -40,10 +40,11 @@ def main():
         ser.write(data.encode()) 
 
         if latest_value is not None:  
-            if np.random.random() < 0.9:
-                w.car.set_control(np.random.choice(3.5, -3/5),0)
-            else: 
-                w.car.set_control(steeringInput(latest_value),0)
+            w.car.set_control(steeringInput(latest_value),0)
+            # if np.random.random() < 0.9:
+            #     w.car.set_control(np.random.choice(3.5, -3/5),0)
+            # else: 
+            #     w.car.set_control(steeringInput(latest_value),0)
 
         w.tick() 
         w.render()

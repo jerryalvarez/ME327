@@ -18,6 +18,12 @@ int pinR = 11; // pin for vibration motor on right side of steering wheel
 
 double dutyL = 0; // duty cycle for left vibration motor
 double dutyR = 0; // duty cycle for right vibration motor
+double motor_state = 0; // track if vibration motors are on or off
+
+unsigned long previousMillis = 0;  // will store last time vibration motors were updated
+long interval = 0;
+int max_vibration_timing = 30000; // maximum vibration timing (milliseconds)
+
 
 // Position tracking variables
 int updatedPos = 0;     // keeps track of the latest updated value of the MR sensor reading
@@ -130,14 +136,14 @@ void loop()
   //*************************************************************
 
   double rh = 0.09;   //[m]
-  // double ts = updatedPos * -0.0122 + 12.1374; Jerry's Hapkit 
-  double ts = -(0.0121 * updatedPos - 4.5246); // Johnny's Hapkit 
+  double ts = updatedPos * -0.0122 + 12.1374; // Jerry's Hapkit 
+  // double ts = -(0.0121 * updatedPos - 4.5246); // Johnny's Hapkit 
   double xh = ts * (M_PI/180) * rh;
   Serial.println(xh,5);
 
   double k = 5; // spring force [N/m]
   double max_duty = 0.5; // maximum possible duty cycle (within comfortable limit of the vibration motors)
-  
+  unsigned long currentMillis = millis(); // current time
 
   if(Serial.available()){
     command = Serial.readStringUntil('\n');
@@ -150,24 +156,44 @@ void loop()
 
     if(depth > 0){ // right crash, depth is positive value
       force = -k * depth;
-      //dutyR = depth * m_duty;
       dutyR = 0.7;
+      dutyL = 0;
     } else if(depth < 0){  // left crash, depth is negative value 
       force = -k * depth;
-      //dutyL = abs(depth) * m_duty;
-      dutyL = 0.5;
+      dutyL = 0.7;
+      dutyR = 0;
     } else {
       force = 0;
       dutyR = 0;
       dutyL = 0;
     }
+    force = 0;
+    interval = max_vibration_timing - max_vibration_timing*(abs(depth)/MAX_DEPTH);
+    interval = max(0, interval);
   } 
 
   int outputL = (int)(dutyL * 255);
   int outputR = (int)(dutyR * 255);
 
-  analogWrite(pinL, outputL);
-  analogWrite(pinR, outputR);
+  if (interval == 0) {
+    analogWrite(pinL, outputL);
+    analogWrite(pinR, outputR);
+  }
+  else if (currentMillis - previousMillis >= interval) {
+    // save the last time you turned the vibration motors on/off
+    previousMillis = currentMillis;
+
+    // if the motor is off turn it on and vice-versa:
+    if (motor_state == 0) {
+      analogWrite(pinL, outputL);
+      analogWrite(pinR, outputR);
+      motor_state = 1;
+    } else {
+      analogWrite(pinL, 0);
+      analogWrite(pinR, 0);
+      motor_state = 0;
+    }
+  }
 
   //*************************************************************
   //*** Section 3. Assign a motor output force in Newtons *******  
