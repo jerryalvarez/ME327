@@ -23,6 +23,7 @@ double motor_state = 0; // track if vibration motors are on or off
 unsigned long previousMillis = 0;  // will store last time vibration motors were updated
 long interval = 0;
 int max_vibration_timing = 30000; // maximum vibration timing (milliseconds)
+int min_vibration_timing = 15000; // minimum vibration timing (milliseconds)
 
 
 // Position tracking variables
@@ -141,19 +142,19 @@ void loop()
   double xh = ts * (M_PI/180) * rh;
   Serial.println(xh,5);
 
-  double k = 5; // spring force [N/m]
+  double k = 1; // spring force [N/m]
   double max_duty = 0.5; // maximum possible duty cycle (within comfortable limit of the vibration motors)
   unsigned long currentMillis = millis(); // current time
+  double depth; 
+  double MAX_DEPTH;
 
   if(Serial.available()){
     command = Serial.readStringUntil('\n');
     // Parse and extract the two variables
-    double depth = command.substring(0, command.indexOf(',')).toDouble();
+    depth = command.substring(0, command.indexOf(',')).toDouble();
     String MAX_DEPTH2STRING = command.substring(command.indexOf(',') + 1);
     MAX_DEPTH2STRING.trim();
-    double MAX_DEPTH = MAX_DEPTH2STRING.toDouble();
-    double m_duty = max_duty/MAX_DEPTH; // slope of the duty cycle
-
+    MAX_DEPTH = MAX_DEPTH2STRING.toDouble();
     if(depth > 0){ // right crash, depth is positive value
       force = -k * depth;
       dutyR = 0.7;
@@ -167,18 +168,21 @@ void loop()
       dutyR = 0;
       dutyL = 0;
     }
+
     force = 0;
-    interval = max_vibration_timing - max_vibration_timing*(abs(depth)/MAX_DEPTH);
+    interval = max_vibration_timing - (max_vibration_timing-min_vibration_timing)*(abs(depth)/MAX_DEPTH);
     interval = max(0, interval);
-  } 
+  }
 
   int outputL = (int)(dutyL * 255);
   int outputR = (int)(dutyR * 255);
+  double offset = 1; 
 
-  if (interval == 0) {
+  if ((abs(depth) + offset) >= MAX_DEPTH) {
     analogWrite(pinL, outputL);
     analogWrite(pinR, outputR);
   }
+
   else if (currentMillis - previousMillis >= interval) {
     // save the last time you turned the vibration motors on/off
     previousMillis = currentMillis;

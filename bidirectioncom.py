@@ -4,7 +4,7 @@ import serial
 from worlds import *
 from helper import *
 
-# Global variable to store the latest value from the serial monitor
+# Global variables
 latest_value = None
 sim_ended = False
 ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 250000, timeout=1)
@@ -41,10 +41,6 @@ def main():
 
         if latest_value is not None:  
             w.car.set_control(steeringInput(latest_value),0)
-            # if np.random.random() < 0.9:
-            #     w.car.set_control(np.random.choice(3.5, -3/5),0)
-            # else: 
-            #     w.car.set_control(steeringInput(latest_value),0)
 
         w.tick() 
         w.render()
@@ -55,6 +51,9 @@ def main():
                 x = np.delete(x, 0)
                 y = np.delete(y, 0)
                 exportPos(x, y, filename)
+            depth = 0
+            data = str(depth) + ',' + str(MAX_DEPTH) + '\n'
+            ser.write(data.encode()) 
             global sim_ended
             sim_ended = True
             w.world.close()

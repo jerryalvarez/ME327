@@ -32,7 +32,6 @@ CAR_VEL = 3
 #CAR_VEL = 0
 
 class BaseCarlo():
-    
     def __init__(self):
         """
         Describes a base Carlo world consisting of the car, a three-lane road,
@@ -69,7 +68,7 @@ class BaseCarlo():
                 (WORLD_HEIGHT / 2) - (2 / PIXELS_PER_METER)
             ),
             Point(LANE_MARKER_WIDTH, WORLD_HEIGHT),
-            color = 'Gray'
+            color = 'LawnGreen'
         )
         self.world.add(self.leftlane) 
         
@@ -79,7 +78,7 @@ class BaseCarlo():
                 (WORLD_HEIGHT / 2) - (2 / PIXELS_PER_METER)
             ),
             Point(LANE_MARKER_WIDTH, WORLD_HEIGHT),
-            color = 'Gray'
+            color = 'LawnGreen'
         )
         self.world.add(self.rightlane) 
 
@@ -186,8 +185,10 @@ class BaseCarlo():
         """
         Checks to see if collision has occured at the left boundary or right boundary or car has reached its goal 
         """
-        if self.car.collidesWith(self.goal) or self.car.collidesWith(self.left) or self.car.collidesWith(self.right):
+        if (
+            self.car.collidesWith(self.goal) or self.car.collidesWith(self.left) or 
+            self.car.collidesWith(self.right) or self.car.collidesWith(self.start)
+        ):
             return True
         else:
             return False
-
