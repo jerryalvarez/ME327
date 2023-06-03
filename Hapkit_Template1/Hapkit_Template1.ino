@@ -22,7 +22,7 @@ double motor_state = 0; // track if vibration motors are on or off
 
 unsigned long previousMillis = 0;  // will store last time vibration motors were updated
 long interval = 0;
-int max_vibration_timing = 30000; // maximum vibration timing (milliseconds)
+int max_vibration_timing = 20000; // maximum vibration timing (milliseconds)
 int min_vibration_timing = 15000; // minimum vibration timing (milliseconds)
 
 
@@ -142,13 +142,16 @@ void loop()
   double xh = ts * (M_PI/180) * rh;
   Serial.println(xh,5);
 
-  double k = 1; // spring force [N/m]
+  double k = 0.5; // spring force [N/m]
   double max_duty = 0.5; // maximum possible duty cycle (within comfortable limit of the vibration motors)
   unsigned long currentMillis = millis(); // current time
   double depth; 
   double MAX_DEPTH;
+  unsigned long random_force_counter = 0;
+  double random_force = random(-100,100)/100.0;
 
   if(Serial.available()){
+    random_force_counter += 1;
     command = Serial.readStringUntil('\n');
     // Parse and extract the two variables
     depth = command.substring(0, command.indexOf(',')).toDouble();
@@ -169,14 +172,18 @@ void loop()
       dutyL = 0;
     }
 
-    force = 0;
+    if (random_force_counter > 200) {
+      random_force = random(-100,100)/100.0;
+      random_force_counter = 0;
+    }
+    force += random_force;
     interval = max_vibration_timing - (max_vibration_timing-min_vibration_timing)*(abs(depth)/MAX_DEPTH);
     interval = max(0, interval);
   }
 
   int outputL = (int)(dutyL * 255);
   int outputR = (int)(dutyR * 255);
-  double offset = 1; 
+  double offset = 1.5; 
 
   if ((abs(depth) + offset) >= MAX_DEPTH) {
     analogWrite(pinL, outputL);
