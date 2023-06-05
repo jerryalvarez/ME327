@@ -13,8 +13,8 @@ int sensorPosPin = A2; // input pin for MR sensor
 int fsrPin = A3; // input pin for FSR sensor
 
 // Pins added for vibration motors
-int pinL = 3; // pin for vibration motor on left side of steering wheel
-int pinR = 11; // pin for vibration motor on right side of steering wheel
+int pinL = 11; // pin for vibration motor on left side of steering wheel
+int pinR = 3; // pin for vibration motor on right side of steering wheel
 
 double dutyL = 0; // duty cycle for left vibration motor
 double dutyR = 0; // duty cycle for right vibration motor
@@ -22,7 +22,7 @@ double motor_state = 0; // track if vibration motors are on or off
 
 unsigned long previousMillis = 0;  // will store last time vibration motors were updated
 long interval = 0;
-int max_vibration_timing = 20000; // maximum vibration timing (milliseconds)
+int max_vibration_timing = 30000; // maximum vibration timing (milliseconds)
 int min_vibration_timing = 15000; // minimum vibration timing (milliseconds)
 
 
@@ -137,12 +137,13 @@ void loop()
   //*************************************************************
 
   double rh = 0.09;   //[m]
-  double ts = updatedPos * -0.0122 + 12.1374; // Jerry's Hapkit 
+  //double ts = updatedPos * -0.0122 + 12.1374; // Jerry's Hapkit 
+  double ts = updatedPos * -0.0122 + 12; // Jerry's Hapkit 
   // double ts = -(0.0121 * updatedPos - 4.5246); // Johnny's Hapkit 
   double xh = ts * (M_PI/180) * rh;
   Serial.println(xh,5);
 
-  double k = 0.5; // spring force [N/m]
+  double k = 0.4; // spring force [N/m]
   double max_duty = 0.5; // maximum possible duty cycle (within comfortable limit of the vibration motors)
   unsigned long currentMillis = millis(); // current time
   double depth; 
@@ -160,7 +161,7 @@ void loop()
     MAX_DEPTH = MAX_DEPTH2STRING.toDouble();
     if(depth > 0){ // right crash, depth is positive value
       force = -k * depth;
-      dutyR = 0.7;
+      dutyR = 0.9;
       dutyL = 0;
     } else if(depth < 0){  // left crash, depth is negative value 
       force = -k * depth;
@@ -171,6 +172,11 @@ void loop()
       dutyR = 0;
       dutyL = 0;
     }
+
+    // editing for studies
+    // force = 0;
+    // dutyR = 0;
+    // dutyL = 0;
 
     if (random_force_counter > 200) {
       random_force = random(-100,100)/100.0;
@@ -185,12 +191,12 @@ void loop()
   int outputR = (int)(dutyR * 255);
   double offset = 1.5; 
 
-  if ((abs(depth) + offset) >= MAX_DEPTH) {
-    analogWrite(pinL, outputL);
-    analogWrite(pinR, outputR);
-  }
+  // if ((abs(depth) + offset) >= MAX_DEPTH) {
+  //   // analogWrite(pinL, outputL);
+  //   // analogWrite(pinR, outputR);
+  // }
 
-  else if (currentMillis - previousMillis >= interval) {
+  if (currentMillis - previousMillis >= interval) {
     // save the last time you turned the vibration motors on/off
     previousMillis = currentMillis;
 

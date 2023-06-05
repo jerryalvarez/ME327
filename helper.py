@@ -16,9 +16,9 @@ def rightcollision(BaseCarlo):
 
 def steeringInput(xh): 
     if(xh > 0.005):
-       current_steering = -3.75
+       current_steering = -3.5
     elif (xh < -0.005):
-       current_steering = 3.75
+       current_steering = 3.5
     else: 
        current_steering = 0
 

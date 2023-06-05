@@ -28,7 +28,7 @@ LANE_PERCENTAGE = 40 #has to be less than 40
 
 DT = 0.1 # time steps in terms of seconds. In other words, 1/dt is the FPS.
 
-CAR_VEL = 3
+CAR_VEL = 5
 #CAR_VEL = 0
 
 class BaseCarlo():
