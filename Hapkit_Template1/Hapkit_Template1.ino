@@ -143,7 +143,8 @@ void loop()
   double xh = ts * (M_PI/180) * rh;
   Serial.println(xh,5);
 
-  double k = 0.4; // spring force [N/m]
+  //double k = 0.4; // spring force [N/m]
+  double k = 0.6; // spring force [N/m]
   double max_duty = 0.5; // maximum possible duty cycle (within comfortable limit of the vibration motors)
   unsigned long currentMillis = millis(); // current time
   double depth; 

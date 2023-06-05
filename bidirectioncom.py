@@ -17,13 +17,12 @@ def main():
     MAX_DEPTH = abs((GRASS_WIDTH + ROAD_WIDTH * (1 + 1)) - w.rightlane.center.x)
     x = np.array(0)
     y = np.array(0)
-    export = False
-    filename = "example"
+    export = True
+    filename = "jerry_bad"
 
     for k in range(400):
         if export: 
             x = np.append(x, w.car.center.x)
-            y = np.append(y, w.car.center.y)
 
         if (k == 1):
             print("Please wait for Serial Montior to begin")
@@ -35,6 +34,13 @@ def main():
             depth = min(w.car.center.x - w.rightlane.center.x, MAX_DEPTH)
         else: 
             depth = 0
+        
+        if w.car.center.x < GRASS_WIDTH + ROAD_WIDTH * (1):
+            y = np.append(y, 1)
+        elif w.car.center.x > GRASS_WIDTH + ROAD_WIDTH * (2):
+            y = np.append(y, 1)
+        else: 
+            y = np.append(y, 0)
 
         data = str(depth) + ',' + str(MAX_DEPTH) + '\n'
         ser.write(data.encode()) 

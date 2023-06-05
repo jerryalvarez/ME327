@@ -1,20 +1,21 @@
 import numpy as np 
 import matplotlib.pyplot as plt
 
-# x = np.arange(5)
-# y = np.arange(6)
+npzfile = np.load('jerry_bad.npz')
 
-# np.savez("example", x=x, y=y)
+x = npzfile['x']
+y1 = np.arange(x.size)
+center = x[0]
+disFromCenter = abs(x - center)
+average = np.average(disFromCenter)
 
-# npzfile = np.load('example.npz')
+y2 = npzfile['y']
+percentOutsideLane = (np.sum(y2)/np.size(y2)) * 100
 
-# x = npzfile['x']
-# y = np.arange(x.size)
 
-print(np.random.random())
+print("Average Distance from Center:", round(average,3))
+print("Percent Outside Lane:", round(percentOutsideLane,3) ,"%")
+plt.plot(x,y1)
+plt.show()
 
-# plt.plot(x,y)
-# plt.show()
 
-# print(npzfile['x'])
-# print(npzfile['y'])

@@ -15,8 +15,8 @@ GOAL_HEIGHT = 1
 GRASS_WIDTH = 1
 PIXELS_PER_METER = 15
 
-#WORLD_WIDTH = 25 #smaller lane 
-WORLD_WIDTH = 30 #medium lane
+WORLD_WIDTH = 20 #smaller lane 
+#WORLD_WIDTH = 30 #medium lane
 #WORLD_WIDTH = 50 #largest lane
 
 WORLD_HEIGHT = 50
@@ -24,7 +24,7 @@ WORLD_HEIGHT = 50
 
 ROAD_WIDTH = (WORLD_WIDTH - 2 * GRASS_WIDTH) / NUM_LANES
 
-LANE_PERCENTAGE = 40 #has to be less than 40
+LANE_PERCENTAGE = 35 #has to be less than 40
 
 DT = 0.1 # time steps in terms of seconds. In other words, 1/dt is the FPS.
 
@@ -68,7 +68,7 @@ class BaseCarlo():
                 (WORLD_HEIGHT / 2) - (2 / PIXELS_PER_METER)
             ),
             Point(LANE_MARKER_WIDTH, WORLD_HEIGHT),
-            color = 'LawnGreen'
+            color = 'Gray'
         )
         self.world.add(self.leftlane) 
         
@@ -78,7 +78,7 @@ class BaseCarlo():
                 (WORLD_HEIGHT / 2) - (2 / PIXELS_PER_METER)
             ),
             Point(LANE_MARKER_WIDTH, WORLD_HEIGHT),
-            color = 'LawnGreen'
+            color = 'Gray'
         )
         self.world.add(self.rightlane) 
 
