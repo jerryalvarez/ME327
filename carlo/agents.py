@@ -3,12 +3,13 @@ from carlo.geometry import Point
 
 # For colors, we use tkinter colors. See http://www.science.smith.edu/dftwiki/index.php/Color_Charts_for_TKinter
 
-class Car(RectangleEntity):
+class Car(CircleEntity):
     def __init__(self, center: Point, heading: float, color: str = 'red'):
-        size = Point(4., 2.)
+        #size = Point(4., 2.)
+        radius = 1.2
         movable = True
         friction = 0.06
-        super(Car, self).__init__(center, heading, size, movable, friction)
+        super(Car, self).__init__(center, heading, radius, movable, friction)
         self.color = color
         self.collidable = True
         
