@@ -174,16 +174,19 @@ void loop()
       dutyL = 0;
     }
 
-    // editing for studies
+    // editing for studies (run 1)
     // force = 0;
     // dutyR = 0;
     // dutyL = 0;
+
+    // editing for studies (run 2)
+    // force = 0;
 
     if (random_force_counter > 200) {
       random_force = random(-100,100)/100.0;
       random_force_counter = 0;
     }
-    force += random_force;
+    //force += random_force;
     interval = max_vibration_timing - (max_vibration_timing-min_vibration_timing)*(abs(depth)/MAX_DEPTH);
     interval = max(0, interval);
   }

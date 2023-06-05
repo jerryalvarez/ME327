@@ -3,6 +3,7 @@ import time
 import serial
 from worlds import *
 from helper import *
+import random
 
 # Global variables
 latest_value = None
@@ -17,8 +18,8 @@ def main():
     MAX_DEPTH = abs((GRASS_WIDTH + ROAD_WIDTH * (1 + 1)) - w.rightlane.center.x)
     x = np.array(0)
     y = np.array(0)
-    export = True
-    filename = "jerry_bad"
+    export = False
+    filename = "_1"
 
     for k in range(400):
         if export: 
@@ -46,7 +47,10 @@ def main():
         ser.write(data.encode()) 
 
         if latest_value is not None:  
-            w.car.set_control(steeringInput(latest_value),0)
+            if (k % 20 == 0): 
+                w.car.set_control(random.choice([-3.5, 3.5]), 0)
+            else: 
+                w.car.set_control(steeringInput(latest_value),0)
 
         w.tick() 
         w.render()

@@ -19,16 +19,16 @@ WORLD_WIDTH = 20 #smaller lane
 #WORLD_WIDTH = 30 #medium lane
 #WORLD_WIDTH = 50 #largest lane
 
-WORLD_HEIGHT = 50
-#WORLD_HEIGHT = 120 # dimension for Jerry's Dell Monitor
+#WORLD_HEIGHT = 50
+WORLD_HEIGHT = 120 # dimension for Jerry's Dell Monitor
 
 ROAD_WIDTH = (WORLD_WIDTH - 2 * GRASS_WIDTH) / NUM_LANES
 
-LANE_PERCENTAGE = 35 #has to be less than 40
+LANE_PERCENTAGE = 45 #has to be less than 40
 
 DT = 0.1 # time steps in terms of seconds. In other words, 1/dt is the FPS.
 
-CAR_VEL = 5
+CAR_VEL = 7
 #CAR_VEL = 0
 
 class BaseCarlo():
@@ -146,7 +146,8 @@ class BaseCarlo():
         """
         Initializes the car in the world.
         """
-        car_init_x = GRASS_WIDTH + (NUM_LANES // 2 ) * ROAD_WIDTH + 0.5 * ROAD_WIDTH
+        #car_init_x = GRASS_WIDTH + (NUM_LANES // 2 ) * ROAD_WIDTH + 0.5 * ROAD_WIDTH
+        car_init_x = GRASS_WIDTH + ROAD_WIDTH * (2) + 2
         car_init_y = LANE_BOTTOM_OFFSET + LANE_MARKER_LENGTH / 2
         self.car = Car(
             Point(car_init_x, car_init_y), # center of car
