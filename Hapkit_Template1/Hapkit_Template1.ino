@@ -191,13 +191,18 @@ void loop()
       force_orientation = 0;
     }
 
-    // editing for studies (run 1)
     force = 0;
+    // editing for studies (run 1)
     // dutyR = 0;
     // dutyL = 0;
+    // force_orientation = 0;
 
     // editing for studies (run 2)
     // force_orientation = 0;
+
+    // editing for studies (run 3)
+    // do nothing
+
     force = force + force_orientation;
 
     if (random_force_counter > 200) {

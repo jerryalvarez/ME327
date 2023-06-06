@@ -19,8 +19,8 @@ def main():
     MAX_DEPTH = abs((GRASS_WIDTH + ROAD_WIDTH * (1 + 1)) - w.rightlane.center.x)
     x = np.array(0)
     y = np.array(0)
-    export = False
-    filename = "_1"
+    export = True
+    filename = "Jerry_3"
 
     for k in range(400):
         if export: 
@@ -42,12 +42,14 @@ def main():
         # else: 
             # orientation = 0
         
-        if w.car.center.x < GRASS_WIDTH + ROAD_WIDTH * (1):
-            y = np.append(y, 1)
-        elif w.car.center.x > GRASS_WIDTH + ROAD_WIDTH * (2):
-            y = np.append(y, 1)
-        else: 
-            y = np.append(y, 0)
+        y = np.append(y, orientation)
+
+        # if w.car.center.x < GRASS_WIDTH + ROAD_WIDTH * (1):
+        #     y = np.append(y, 1)
+        # elif w.car.center.x > GRASS_WIDTH + ROAD_WIDTH * (2):
+        #     y = np.append(y, 1)
+        # else: 
+        #     y = np.append(y, 0)
 
         data = str(depth) + ',' + str(orientation) + ';' + str(MAX_DEPTH) + '\n'
         # print(data)
