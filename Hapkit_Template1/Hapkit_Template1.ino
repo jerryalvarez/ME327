@@ -47,6 +47,7 @@ double xh = 0;           // position of the handle [m]
 
 // Force output variables
 double force = 0;           // force at the handle
+double force_orientation = 0; // force at the handle due to orientation
 double Tp = 0;              // torque of the motor pulley
 double duty = 0;            // duty cylce (between 0 and 255)
 unsigned int output = 0;    // output command to the motor
@@ -142,24 +143,30 @@ void loop()
   // double ts = -(0.0121 * updatedPos - 4.5246); // Johnny's Hapkit 
   double xh = ts * (M_PI/180) * rh;
   Serial.println(xh,5);
+  // Serial.print(",");
 
   //double k = 0.4; // spring force [N/m]
-  double k = 0.6; // spring force [N/m]
+  double k = 0.05; // spring force [N/m]
+  double k2 = 2; // spring force due to orientation [N/m]
   double max_duty = 0.5; // maximum possible duty cycle (within comfortable limit of the vibration motors)
   unsigned long currentMillis = millis(); // current time
   double depth; 
   double MAX_DEPTH;
+  double orientation;
   unsigned long random_force_counter = 0;
   double random_force = random(-100,100)/100.0;
 
   if(Serial.available()){
     random_force_counter += 1;
     command = Serial.readStringUntil('\n');
+    // command = "-2.6999999999999993,-2.6999999999999993;0.0460229520953499";
     // Parse and extract the two variables
     depth = command.substring(0, command.indexOf(',')).toDouble();
-    String MAX_DEPTH2STRING = command.substring(command.indexOf(',') + 1);
+    orientation = command.substring(command.indexOf(',') + 1, command.indexOf(';')).toDouble();
+    String MAX_DEPTH2STRING = command.substring(command.indexOf(';') + 1);
     MAX_DEPTH2STRING.trim();
     MAX_DEPTH = MAX_DEPTH2STRING.toDouble();
+
     if(depth > 0){ // right crash, depth is positive value
       force = -k * depth;
       dutyR = 0.9;
@@ -174,13 +181,24 @@ void loop()
       dutyL = 0;
     }
 
+    if(orientation < 0 && abs(depth) != MAX_DEPTH && depth > 0){  // car is oriented to the right
+      force_orientation = k2 * orientation;
+      // dutyR = 0.9;
+    } else if(orientation > 0 && abs(depth) != MAX_DEPTH && depth < 0){  // car is oriented to the left
+      force_orientation = k2 * orientation;
+      // dutyL = 0.7;
+    } else {
+      force_orientation = 0;
+    }
+
     // editing for studies (run 1)
-    // force = 0;
+    force = 0;
     // dutyR = 0;
     // dutyL = 0;
 
     // editing for studies (run 2)
-    // force = 0;
+    // force_orientation = 0;
+    force = force + force_orientation;
 
     if (random_force_counter > 200) {
       random_force = random(-100,100)/100.0;

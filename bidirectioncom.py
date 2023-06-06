@@ -15,6 +15,7 @@ ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 250000, timeout=1)
 def main():
     w = BaseCarlo()
     depth = 0
+    orientation = 0
     MAX_DEPTH = abs((GRASS_WIDTH + ROAD_WIDTH * (1 + 1)) - w.rightlane.center.x)
     x = np.array(0)
     y = np.array(0)
@@ -35,6 +36,11 @@ def main():
             depth = min(w.car.center.x - w.rightlane.center.x, MAX_DEPTH)
         else: 
             depth = 0
+            
+        # if (w.car.center.x < (GRASS_WIDTH + ROAD_WIDTH * (2)) or w.car.center.x > (GRASS_WIDTH + ROAD_WIDTH * (1))) and (w.car.heading - np.pi/2) != 0: #car has orientation and within the lanes
+        orientation = w.car.heading - np.pi/2
+        # else: 
+            # orientation = 0
         
         if w.car.center.x < GRASS_WIDTH + ROAD_WIDTH * (1):
             y = np.append(y, 1)
@@ -43,7 +49,8 @@ def main():
         else: 
             y = np.append(y, 0)
 
-        data = str(depth) + ',' + str(MAX_DEPTH) + '\n'
+        data = str(depth) + ',' + str(orientation) + ';' + str(MAX_DEPTH) + '\n'
+        # print(data)
         ser.write(data.encode()) 
 
         if latest_value is not None:  
@@ -62,7 +69,7 @@ def main():
                 y = np.delete(y, 0)
                 exportPos(x, y, filename)
             depth = 0
-            data = str(depth) + ',' + str(MAX_DEPTH) + '\n'
+            data = str(depth) + ',' + str(orientation) + ';' + str(MAX_DEPTH) + '\n'
             ser.write(data.encode()) 
             global sim_ended
             sim_ended = True
