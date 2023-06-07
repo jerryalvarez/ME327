@@ -2,9 +2,7 @@ import numpy as np
 from carlo.world import World
 from carlo.agents import Car, RectangleBuilding, Painting
 from carlo.geometry import Point
-import time
 
-human_controller = False
 NUM_LANES = 3
 NUM_ROWS = 20
 LANE_MARKER_SPACING = 3
@@ -24,12 +22,11 @@ WORLD_HEIGHT = 120 # dimension for Jerry's Dell Monitor
 
 ROAD_WIDTH = (WORLD_WIDTH - 2 * GRASS_WIDTH) / NUM_LANES
 
-LANE_PERCENTAGE = 45 #has to be less than 40
+LANE_PERCENTAGE = 45 
 
 DT = 0.1 # time steps in terms of seconds. In other words, 1/dt is the FPS.
 
 CAR_VEL = 7.5
-#CAR_VEL = 0
 
 class BaseCarlo():
     def __init__(self):
@@ -60,6 +57,8 @@ class BaseCarlo():
             - lane markings (Paintings)
             - finish line (Painting)
             - start line (Painting)
+            - left lane marker (RectangleBuildings)
+            - right lane marker (RectangleBuildings)
         """
         # add lane boundaries
         self.leftlane = RectangleBuilding(
@@ -146,12 +145,11 @@ class BaseCarlo():
         """
         Initializes the car in the world.
         """
-        #car_init_x = GRASS_WIDTH + (NUM_LANES // 2 ) * ROAD_WIDTH + 0.5 * ROAD_WIDTH
-        car_init_x = GRASS_WIDTH + ROAD_WIDTH * (2) + 2
+        car_init_x = GRASS_WIDTH + ROAD_WIDTH * (2) + 2 #car has an offset to start in right lane
         car_init_y = LANE_BOTTOM_OFFSET + LANE_MARKER_LENGTH / 2
         self.car = Car(
             Point(car_init_x, car_init_y), # center of car
-            (np.pi / 2) # heading it was (np.pi / 2) + np.radians(3) 
+            (np.pi / 2) 
         )
         self.car.velocity = Point(0, CAR_VEL)
         self.car.friction = 0
@@ -184,7 +182,8 @@ class BaseCarlo():
 
     def end_sim(self):
         """
-        Checks to see if collision has occured at the left boundary or right boundary or car has reached its goal 
+        Checks to see if collision has occured at the left boundary or right boundary 
+        or car has reached its goal or has collided with the start line. 
         """
         if (
             self.car.collidesWith(self.goal) or self.car.collidesWith(self.left) or 

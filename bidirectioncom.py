@@ -1,7 +1,7 @@
 import threading
 import time
 import serial
-from worlds import *
+from world import *
 from helper import *
 import random
 
@@ -9,22 +9,24 @@ import random
 latest_value = None
 sim_ended = False
 ser = serial.Serial('/dev/cu.usbserial-AB0LB3DQ', 250000, timeout=1)
-#er = serial.Serial('/dev/cu.usbserial-AL03G1OK', 250000, timeout=1) #Johnny's Hapkit 
 
-# Rendering function
 def main():
     w = BaseCarlo()
-    depth = 0
-    orientation = 0
-    MAX_DEPTH = abs((GRASS_WIDTH + ROAD_WIDTH * (1 + 1)) - w.rightlane.center.x)
+    depth = 0 # penetration depth from the center lane buffer
+    orientation = 0 # heading of object
+    MAX_DEPTH = abs((GRASS_WIDTH + ROAD_WIDTH * (1 + 1)) - w.rightlane.center.x) # max penetration depth 
+
+    # export variables 
     x = np.array(0)
     y = np.array(0)
-    export = True
-    filename = "Jerry_3"
+    export = False
+    filename = "User20_1"
 
     for k in range(400):
         if export: 
+            orientation = w.car.heading - np.pi/2
             x = np.append(x, w.car.center.x)
+            y = np.append(y, orientation)
 
         if (k == 1):
             print("Please wait for Serial Montior to begin")
@@ -37,27 +39,14 @@ def main():
         else: 
             depth = 0
             
-        # if (w.car.center.x < (GRASS_WIDTH + ROAD_WIDTH * (2)) or w.car.center.x > (GRASS_WIDTH + ROAD_WIDTH * (1))) and (w.car.heading - np.pi/2) != 0: #car has orientation and within the lanes
-        orientation = w.car.heading - np.pi/2
-        # else: 
-            # orientation = 0
-        
-        y = np.append(y, orientation)
-
-        # if w.car.center.x < GRASS_WIDTH + ROAD_WIDTH * (1):
-        #     y = np.append(y, 1)
-        # elif w.car.center.x > GRASS_WIDTH + ROAD_WIDTH * (2):
-        #     y = np.append(y, 1)
-        # else: 
-        #     y = np.append(y, 0)
-
+        #writing data to the serial montior 
         data = str(depth) + ',' + str(orientation) + ';' + str(MAX_DEPTH) + '\n'
-        # print(data)
         ser.write(data.encode()) 
 
+        #checks to see if data has been recieved in the serial monitor 
         if latest_value is not None:  
-            if (k % 20 == 0): 
-                w.car.set_control(random.choice([-3.5, 3.5]), 0)
+            if (k % 15 == 0): 
+                w.car.set_control(random.choice([-3.5, 3.5]), 0) #implements road noise
             else: 
                 w.car.set_control(steeringInput(latest_value),0)
 
@@ -65,6 +54,7 @@ def main():
         w.render()
         time.sleep(DT/1) 
 
+        # finishes export calls and closes serial monitor
         if w.end_sim():
             if export:
                 x = np.delete(x, 0)
